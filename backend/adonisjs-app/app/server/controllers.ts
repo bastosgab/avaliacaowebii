@@ -4,7 +4,11 @@
  */
 
 export const controllers = {
-  AccessTokens: () => import('#controllers/access_tokens_controller'),
-  NewAccount: () => import('#controllers/new_account_controller'),
-  Profile: () => import('#controllers/profile_controller'),
+  'NewAccountController': () => import('#controllers/new_account_controller'),
+  'AccessTokensController': () => import('#controllers/access_tokens_controller'),
+  'ProfileController': () => import('#controllers/profile_controller'),
+  'ClientesController': () => import('#controllers/clientes_controller'),
+  'ContaCorrentesController': () => import('#controllers/conta_correntes_controller'),
+  'MovimentacaosController': () => import('#controllers/movimentacaos_controller'),
+  'InvestimentosController': () => import('#controllers/investimentos_controller'),
 }

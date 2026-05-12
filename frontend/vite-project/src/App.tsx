@@ -1,18 +1,62 @@
-import { useEffect } from "react";
-import { api } from "./services/api.ts";
+import { useState, useContext } from 'react'
+import { AuthProvider, AuthContext } from './contexts/AuthContext'
+import { Header } from './components/Header'
+import { Sidebar } from './components/Sidebar'
+import { LoginPage } from './pages/LoginPage'
+import { DashboardPage } from './pages/DashboardPage'
+import { ClientesPage } from './pages/ClientesPage'
+import { ContasPage } from './pages/ContasPage'
+import { InvestimentosPage } from './pages/InvestimentosPage'
+import './App.css'
 
-function App() {
-  useEffect(() => {
-    api.get("/teste")
-      .then((res: any) => {
-        console.log("RESPOSTA DO BACKEND:", res.data);
-      })
-      .catch((err: any) => {
-        console.error("ERRO:", err);
-      });
-  }, []);
+function AppContent() {
+  const [currentPage, setCurrentPage] = useState('dashboard')
+  const authContext = useContext(AuthContext)
 
-  return <h1>Conectando Front e Back</h1>;
+  if (!authContext) {
+    return null
+  }
+
+  const { isAuthenticated, isLoading } = authContext
+
+  if (isLoading) {
+    return <div className="loading">Carregando...</div>
+  }
+
+  if (!isAuthenticated) {
+    return <LoginPage onLoginSuccess={() => setCurrentPage('dashboard')} />
+  }
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'clientes':
+        return <ClientesPage />
+      case 'contas':
+        return <ContasPage />
+      case 'investimentos':
+        return <InvestimentosPage />
+      default:
+        return <DashboardPage />
+    }
+  }
+
+  return (
+    <div className="app-layout">
+      <Header />
+      <div className="app-body">
+        <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
+        <main className="app-content">{renderPage()}</main>
+      </div>
+    </div>
+  )
 }
 
-export default App;
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  )
+}
+
+export default App
