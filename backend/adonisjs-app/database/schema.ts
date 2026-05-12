@@ -59,63 +59,65 @@ export class ClienteSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
-export class ContaCorrenteSchema extends BaseModel {
+export class ContasCorrenteSchema extends BaseModel {
   static $columns = ['agencia', 'clienteId', 'createdAt', 'id', 'numeroConta', 'saldo', 'updatedAt'] as const
-  $columns = ContaCorrenteSchema.$columns
-  @column({ isPrimary: true })
-  declare id: number
-  @column()
-  declare clienteId: number
-  @column()
-  declare numeroConta: string
+  $columns = ContasCorrenteSchema.$columns
   @column()
   declare agencia: string
   @column()
-  declare saldo: number
+  declare clienteId: number | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
-}
-
-export class MovimentacaoSchema extends BaseModel {
-  static $columns = ['contaDestinoId', 'contaOrigemId', 'createdAt', 'descricao', 'id', 'tipo', 'updatedAt', 'valor'] as const
-  $columns = MovimentacaoSchema.$columns
   @column({ isPrimary: true })
   declare id: number
   @column()
-  declare contaOrigemId: number
+  declare numeroConta: string
   @column()
-  declare contaDestinoId: number | null
-  @column()
-  declare tipo: 'deposito' | 'saque' | 'transferencia' | 'aplicacao' | 'resgate'
-  @column()
-  declare valor: number
-  @column()
-  declare descricao: string | null
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime | null
+  declare saldo: number | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 }
 
 export class InvestimentoSchema extends BaseModel {
-  static $columns = ['clienteId', 'createdAt', 'dataAplicacao', 'dataResgate', 'id', 'tipo', 'valorInvestido', 'updatedAt'] as const
+  static $columns = ['clienteId', 'createdAt', 'dataAplicacao', 'dataResgate', 'id', 'tipo', 'updatedAt', 'valorInvestido'] as const
   $columns = InvestimentoSchema.$columns
+  @column()
+  declare clienteId: number | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column.dateTime()
+  declare dataAplicacao: DateTime
+  @column.dateTime()
+  declare dataResgate: DateTime | null
   @column({ isPrimary: true })
   declare id: number
   @column()
-  declare clienteId: number
-  @column()
-  declare tipo: 'poupanca' | 'titulos' | 'acoes'
-  @column()
-  declare valorInvestido: number
-  @column.dateTime()
-  declare dataAplicacao: DateTime
-  @column.dateTime({ serializeAs: null })
-  declare dataResgate: DateTime | null
+  declare tipo: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+  @column()
+  declare valorInvestido: number
+}
+
+export class MovimentacoeSchema extends BaseModel {
+  static $columns = ['contaDestinoId', 'contaOrigemId', 'createdAt', 'descricao', 'id', 'tipo', 'updatedAt', 'valor'] as const
+  $columns = MovimentacoeSchema.$columns
+  @column()
+  declare contaDestinoId: number | null
+  @column()
+  declare contaOrigemId: number | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare descricao: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare tipo: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare valor: number
 }
 
 export class UserSchema extends BaseModel {

@@ -58,7 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await api.post('/signup', {
         email,
         password,
-        full_name: fullName,
+        passwordConfirmation: password,
+        fullName,
       })
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Erro ao criar conta')

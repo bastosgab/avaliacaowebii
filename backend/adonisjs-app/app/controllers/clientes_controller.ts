@@ -17,7 +17,9 @@ export default class ClientesController {
       numero
     })
 
-    return response.created(cliente)
+    const data = cliente.serialize()
+    delete data.senha
+    return response.created(data)
   }
 
   async index({ response }: HttpContext) {

@@ -2,52 +2,63 @@ import Movimentacao from '#models/movimentacao'
 import ContaCorrente from '#models/conta_corrente'
 import { pixValidator } from '#validators/movimentacao'
 import type { HttpContext } from '@adonisjs/core/http'
+import Database from '@adonisjs/lucid/services/db'
 
 export default class MovimentacaosController {
   async pix({ request, response }: HttpContext) {
     const { conta_origem_id, numero_conta_destino, valor } = await request.validateUsing(pixValidator)
 
-    // Verificar conta origem
-    const contaOrigem = await ContaCorrente.find(conta_origem_id)
-    if (!contaOrigem) {
-      return response.badRequest({ message: 'Conta de origem não encontrada' })
-    }
-
-    // Verificar saldo suficiente
-    if (contaOrigem.saldo < valor) {
-      return response.badRequest({ message: 'Saldo insuficiente' })
-    }
-
-    // Verificar conta destino
-    const contaDestino = await ContaCorrente.query().where('numero_conta', numero_conta_destino).first()
-    if (!contaDestino) {
-      return response.badRequest({ message: 'Conta de destino não encontrada' })
-    }
-
-    // Evitar transferência para mesma conta
-    if (contaOrigem.id === contaDestino.id) {
-      return response.badRequest({ message: 'Não é possível transferir para a mesma conta' })
-    }
-
     try {
-      // Debitar da conta origem
-      contaOrigem.saldo -= valor
-      await contaOrigem.save()
+      const result = await Database.transaction(async (trx) => {
+        const contaOrigem = await ContaCorrente.query({ client: trx })
+          .where('id', conta_origem_id)
+          .forUpdate()
+          .first()
 
-      // Creditar na conta destino
-      contaDestino.saldo += valor
-      await contaDestino.save()
+        if (!contaOrigem) {
+          return { error: { status: 400, message: 'Conta de origem não encontrada' } }
+        }
 
-      // Registrar movimentação
-      const movimentacao = await Movimentacao.create({
-        contaOrigemId: contaOrigem.id,
-        contaDestinoId: contaDestino.id,
-        tipo: 'transferencia',
-        valor,
-        descricao: 'Transferência PIX'
+        const contaDestino = await ContaCorrente.query({ client: trx })
+          .where('numero_conta', numero_conta_destino)
+          .forUpdate()
+          .first()
+
+        if (!contaDestino) {
+          return { error: { status: 400, message: 'Conta de destino não encontrada' } }
+        }
+
+        if (contaOrigem.id === contaDestino.id) {
+          return { error: { status: 400, message: 'Não é possível transferir para a mesma conta' } }
+        }
+
+        const saldoOrigem = Number(contaOrigem.saldo)
+        if (saldoOrigem < valor) {
+          return { error: { status: 400, message: 'Saldo insuficiente' } }
+        }
+
+        contaOrigem.saldo = saldoOrigem - valor
+        contaDestino.saldo = Number(contaDestino.saldo) + valor
+
+        await contaOrigem.useTransaction(trx).save()
+        await contaDestino.useTransaction(trx).save()
+
+        const movimentacao = await Movimentacao.create({
+          contaOrigemId: contaOrigem.id,
+          contaDestinoId: contaDestino.id,
+          tipo: 'transferencia',
+          valor,
+          descricao: 'Transferência PIX'
+        }, { client: trx })
+
+        return { movimentacao }
       })
 
-      return response.created(movimentacao)
+      if ('error' in result) {
+        return response.status(result.error.status).send({ message: result.error.message })
+      }
+
+      return response.created(result.movimentacao)
     } catch (error) {
       return response.internalServerError({ message: 'Erro ao processar transferência' })
     }
