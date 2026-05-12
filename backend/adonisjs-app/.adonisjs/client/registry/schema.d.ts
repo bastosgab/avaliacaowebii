@@ -91,6 +91,18 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'conta_correntes.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/contas'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
   'conta_correntes.show': {
     methods: ["GET","HEAD"]
     pattern: '/contas/:id'

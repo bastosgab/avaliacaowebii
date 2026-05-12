@@ -41,7 +41,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password,
       })
 
-      const { user: userData, token: newToken } = response.data
+      const responseData = response.data as unknown as { data?: AuthResponse } & AuthResponse
+      const payload = responseData.data ?? responseData
+      const { user: userData, token: newToken } = payload
 
       storage.setToken(newToken)
       storage.setUser(userData)
@@ -49,7 +51,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(userData)
       api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Erro ao fazer login')
+      const backendMessage =
+        error.response?.data?.message ||
+        error.response?.data?.errors?.[0]?.message
+      throw new Error(backendMessage || 'Erro ao fazer login')
     }
   }
 
@@ -62,7 +67,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         fullName,
       })
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Erro ao criar conta')
+      const backendMessage =
+        error.response?.data?.message ||
+        error.response?.data?.errors?.[0]?.message
+      throw new Error(backendMessage || 'Erro ao criar conta')
     }
   }
 

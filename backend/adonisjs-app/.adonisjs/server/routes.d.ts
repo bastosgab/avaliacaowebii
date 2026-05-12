@@ -11,6 +11,7 @@ export type ScannedRoutes = {
     'clientes.store': { paramsTuple?: []; params?: {} }
     'clientes.index': { paramsTuple?: []; params?: {} }
     'conta_correntes.store': { paramsTuple?: []; params?: {} }
+    'conta_correntes.index': { paramsTuple?: []; params?: {} }
     'conta_correntes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'movimentacaos.saldo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'movimentacaos.extrato': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -22,6 +23,7 @@ export type ScannedRoutes = {
   GET: {
     'profile.show': { paramsTuple?: []; params?: {} }
     'clientes.index': { paramsTuple?: []; params?: {} }
+    'conta_correntes.index': { paramsTuple?: []; params?: {} }
     'conta_correntes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'movimentacaos.saldo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'movimentacaos.extrato': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -30,6 +32,7 @@ export type ScannedRoutes = {
   HEAD: {
     'profile.show': { paramsTuple?: []; params?: {} }
     'clientes.index': { paramsTuple?: []; params?: {} }
+    'conta_correntes.index': { paramsTuple?: []; params?: {} }
     'conta_correntes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'movimentacaos.saldo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'movimentacaos.extrato': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

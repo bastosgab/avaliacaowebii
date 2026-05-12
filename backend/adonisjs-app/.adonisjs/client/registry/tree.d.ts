@@ -18,6 +18,7 @@ export interface ApiDefinition {
   }
   contaCorrentes: {
     store: typeof routes['conta_correntes.store']
+    index: typeof routes['conta_correntes.index']
     show: typeof routes['conta_correntes.show']
   }
   movimentacaos: {

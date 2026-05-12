@@ -1,4 +1,4 @@
-import { ContaCorrenteSchema } from '#database/schema'
+import { ContasCorrenteSchema } from '#database/schema'
 
-export default class ContaCorrente extends ContaCorrenteSchema {
+export default class ContaCorrente extends ContasCorrenteSchema {
 }

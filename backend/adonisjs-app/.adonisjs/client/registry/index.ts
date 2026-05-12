@@ -48,6 +48,12 @@ const routes = {
     tokens: [{"old":"/contas","type":0,"val":"contas","end":""}],
     types: placeholder as Registry['conta_correntes.store']['types'],
   },
+  'conta_correntes.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/contas',
+    tokens: [{"old":"/contas","type":0,"val":"contas","end":""}],
+    types: placeholder as Registry['conta_correntes.index']['types'],
+  },
   'conta_correntes.show': {
     methods: ["GET","HEAD"],
     pattern: '/contas/:id',

@@ -27,10 +27,15 @@ export default class ContaCorrentesController {
       clienteId: cliente_id,
       numeroConta: numeroConta,
       agencia,
-      saldo: 0
+      saldo: 0,
     })
 
     return response.created(conta)
+  }
+
+  async index() {
+    const contas = await ContaCorrente.all()
+    return contas
   }
 
   async show({ params, response }: HttpContext) {

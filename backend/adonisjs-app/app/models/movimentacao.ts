@@ -1,4 +1,4 @@
-import { MovimentacaoSchema } from '#database/schema'
+import { MovimentacoeSchema } from '#database/schema'
 
-export default class Movimentacao extends MovimentacaoSchema {
+export default class Movimentacao extends MovimentacoeSchema {
 }
